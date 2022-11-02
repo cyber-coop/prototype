@@ -1,0 +1,11 @@
+[package]
+name = "prototype"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+hex = "0.4.3"
+bitcoin-network = { git = "https://github.com/cyber-coop/bitcoin-network", branch = "main" }
+magic-bytes = { git = "https://github.com/cyber-coop/magic-bytes", branch = "main" }
