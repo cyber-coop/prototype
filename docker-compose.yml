@@ -1,0 +1,98 @@
+  version: "3.9"
+
+  services:
+    indexer_dogecoin_testnet:
+      build: ../.
+      depends_on:
+        - postgres
+        - influxdb
+      environment:
+        NETWORK: "dogecoin"
+        TESTNET: "true"
+        RUST_BACKTRACE: "full"
+        RUST_LOG: "prototype=trace"
+      networks:
+        - prototypes
+
+    indexer_dogecoin_mainnet:
+      build: ../.
+      depends_on:
+        - postgres
+        - influxdb
+      environment:
+        NETWORK: "dogecoin"
+        TESTNET: "false"
+        RUST_BACKTRACE: "full"
+        RUST_LOG: "prototype=trace"
+      networks:
+        - prototypes
+
+    indexer_namecoin_mainnet:
+      build: ../.
+      depends_on:
+        - postgres
+        - influxdb
+      environment:
+        NETWORK: "namecoin"
+        TESTNET: "false"
+        RUST_BACKTRACE: "full"
+        RUST_LOG: "prototype=trace"
+      networks:
+        - prototypes
+
+    indexer_litecoin_testnet:
+      build: ../.
+      depends_on:
+        - postgres
+        - influxdb
+      environment:
+        NETWORK: "litecoin"
+        TESTNET: "true"
+        RUST_BACKTRACE: "full"
+        RUST_LOG: "prototype=trace"
+      networks:
+        - prototypes
+
+    indexer_litecoin_mainnet:
+      build: ../.
+      depends_on:
+        - postgres
+        - influxdb
+      environment:
+        NETWORK: "litecoin"
+        TESTNET: "false"
+        RUST_BACKTRACE: "full"
+        RUST_LOG: "prototype=trace"
+      networks:
+        - prototypes
+
+    indexer_bitcoin_testnet:
+      build: ../.
+      depends_on:
+        - postgres
+        - influxdb
+      environment:
+        NETWORK: "bitcoin"
+        TESTNET: "true"
+        RUST_BACKTRACE: "full"
+        RUST_LOG: "prototype=trace"
+      networks:
+        - prototypes
+
+    indexer_bitcoin_mainnet:
+      build: ../.
+      depends_on:
+        - postgres
+        - influxdb
+      environment:
+        NETWORK: "bitcoin"
+        TESTNET: "false"
+        RUST_BACKTRACE: "full"
+        RUST_LOG: "prototype=trace"
+      networks:
+        - prototypes
+
+networks:
+  prototypes:
+    name: prototypes
+    external: true

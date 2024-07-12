@@ -1,1 +1,9 @@
-/target
+target
+contrib/data
+__pycache__
+.vscode
+archive/
+data/
+script/
+privatekeys.txt
+Makefile.prod
