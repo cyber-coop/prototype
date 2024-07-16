@@ -1,6 +1,4 @@
-use std::net::TcpStream;
-use std::io::prelude::*;
-use bitcoin_network::{message::Message, block::Block, inventory::Inventory};
+use bitcoin_network::{block::Block, inventory::Inventory};
 use std::error::Error;
 use bitcoin_network::{address::Address, version::Version};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -32,7 +30,7 @@ pub fn check_chain(blocks: &mut Vec<Block>, hash: Vec<u8>) -> Result<Vec<Block>,
 pub fn create_version(host: &str) -> Version {
     let split: Vec<&str> = host.split(":").collect();
     let ip_string: Vec<&str> = split[0].split(".").collect();
-    let port: u16 = split[1].parse().unwrap();
+    let _port: u16 = split[1].parse().unwrap();
 
     // FIXME: Only support ipv4
     let ip = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, ip_string[0].parse::<u8>().unwrap(), ip_string[1].parse::<u8>().unwrap(), ip_string[2].parse::<u8>().unwrap(), ip_string[3].parse::<u8>().unwrap()];

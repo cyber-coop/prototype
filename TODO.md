@@ -4,7 +4,7 @@
 - [x] Create a thread that would queue data to save in the database
 - [x] ~~Prometheus + grafana~~ influxdb data collector and syncing monitoring
 - [x] Dockerfile
-- [ ] Remove warnings
+- [x] Remove warnings
 - [ ] Improve development process 
     - [ ] Use `init.sh` to create tables
 - [ ] Improve sql query (in NOTES.md) to avoid the encoding call

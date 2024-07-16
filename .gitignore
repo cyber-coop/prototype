@@ -7,3 +7,4 @@ data/
 script/
 privatekeys.txt
 Makefile.prod
+docker-compose.prod.yml

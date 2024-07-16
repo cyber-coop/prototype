@@ -16,8 +16,7 @@ COPY --from=builder /usr/local/cargo/bin/prototype /usr/local/bin/prototype
 RUN apt-get update && rm -rf /var/lib/apt/lists/*
 
 # default env
-ENV NETWORK "dogecoin"
-ENV TESTNET "true"
+ENV NETWORK "dogecoin_testnet"
 ENV RUST_LOG "prototype=info"
 
-CMD prototype ${NETWORK} ${TESTNET} 
+CMD prototype ${NETWORK}

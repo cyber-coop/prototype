@@ -1,13 +1,12 @@
 use bitcoin_network::message::Message;
-use bitcoin_network::get_blocks::GetBlocks;
-use bitcoin_network::get_data::GetData;
 use bitcoin_network::version::Version;
 use std::net::TcpStream;
 use std::sync::mpsc::channel;
 use std::error::Error;
 use std::io::prelude::*;
-use std::thread::{self, sleep_ms};
+use std::thread;
 use std::sync::mpsc::{Receiver, Sender};
+use std::time::Duration;
 
 use crate::utils;
 
@@ -52,12 +51,12 @@ impl Peer {
                 let mut buf = [0; 24];
 
                 // we have this loop to be sure we have received at least 24 bytes
-                while stream.peek(&mut buf).unwrap() != 24 { thread::sleep_ms(50); }
+                while stream.peek(&mut buf).unwrap() != 24 { thread::sleep(Duration::from_millis(50)); }
                 stream.read_exact(&mut buf).unwrap();
                 data.extend(&buf);
         
                 let payload_size = u32::from_le_bytes(buf[16..20].try_into().unwrap()) as usize;
-                let command = String::from_utf8(buf[4..16].to_vec()).unwrap();
+                let _command = String::from_utf8(buf[4..16].to_vec()).unwrap();
 
                 // Message payload
                 let mut payload : Vec<u8> = vec![];
@@ -68,7 +67,7 @@ impl Peer {
                     let l = stream.read(&mut buf).unwrap();
 
                     payload.extend(&buf[0..l]);
-                    thread::sleep_ms(500);
+                    thread::sleep(Duration::from_millis(500));
                 }
                 data.extend(payload);
         
@@ -92,7 +91,7 @@ impl Peer {
                     continue;
                 }
 
-                tx.send(message);
+                let _ = tx.send(message);
             }
         })
     }
