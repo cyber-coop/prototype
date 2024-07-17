@@ -1,19 +1,17 @@
-use bitcoin_network::{
-    block::Block, get_blocks::GetBlocks, get_data::GetData, message::Message,
-};
+use bitcoin_network::{block::Block, get_blocks::GetBlocks, get_data::GetData, message::Message};
 use std::env;
 use std::sync::mpsc::sync_channel;
 use std::thread;
 use std::time::Instant;
 
+pub mod configs;
 pub mod database;
 pub mod duplicate;
 pub mod networks;
 pub mod peer;
 pub mod utils;
-pub mod configs;
 
-use crate::database::{save_blocks, finish};
+use crate::database::{finish, save_blocks};
 use crate::peer::Peer;
 
 #[macro_use]
@@ -41,8 +39,11 @@ fn main() {
      ********************/
 
     let mut message_rcv: Message;
-    let mut peer = Peer::new(format!("{},{}", config.peer.ip, config.peer.port), network.magic_bytes);
-    let mut current_height: u32  = 0;
+    let mut peer = Peer::new(
+        format!("{},{}", config.peer.ip, config.peer.port),
+        network.magic_bytes,
+    );
+    let mut current_height: u32 = 0;
 
     let mut hash = network.genesis_hash.to_vec();
     hash.reverse();
@@ -62,25 +63,29 @@ fn main() {
         config.database.dbname
     );
 
-    let mut postgres_client = postgres::Client::connect(
-        &database_params,
-        postgres::NoTls,
-    )
-    .unwrap();
+    let mut postgres_client = postgres::Client::connect(&database_params, postgres::NoTls).unwrap();
 
     // create the tables if they don't exist
     database::create_tables(&network_arg, &mut postgres_client);
 
-    let result = postgres_client.query(format!("SELECT * FROM {0}.blocks a JOIN (SELECT MAX(height) as h FROM {0}.blocks) b ON a.height = b.h;", network_arg).as_str(), &[]).unwrap();    
+    let result = postgres_client.query(format!("SELECT * FROM {0}.blocks a JOIN (SELECT MAX(height) as h FROM {0}.blocks) b ON a.height = b.h;", network_arg).as_str(), &[]).unwrap();
     if result.len() > 0 {
         let row = &result[0];
         current_height = row.get(0);
         hash = row.get(1);
 
-        info!("We have found a new hash {} and height {}", hex::encode(&hash), current_height);
+        info!(
+            "We have found a new hash {} and height {}",
+            hex::encode(&hash),
+            current_height
+        );
     }
 
-    info!("We have found a new hash {} and height {}", hex::encode(&hash), current_height);
+    info!(
+        "We have found a new hash {} and height {}",
+        hex::encode(&hash),
+        current_height
+    );
 
     /********************
      *
@@ -96,17 +101,19 @@ fn main() {
         let mut process_current_height = current_height;
 
         // Connect to database
-        let mut postgres_client = postgres::Client::connect(
-            &database_params,
-            postgres::NoTls,
-        )
-        .unwrap();
+        let mut postgres_client =
+            postgres::Client::connect(&database_params, postgres::NoTls).unwrap();
 
         // while recv save blocks in database
         loop {
             let blocks: Vec<Block> = rx.recv().unwrap();
 
-            save_blocks(blocks, &network_arg, &mut postgres_client, &mut process_current_height);
+            save_blocks(
+                blocks,
+                &network_arg,
+                &mut postgres_client,
+                &mut process_current_height,
+            );
 
             // We are synced
             if process_current_height > height {
@@ -143,8 +150,10 @@ fn main() {
 
                 // Verify if inventory is what we asked for
                 let verified = utils::verify_inv_identifier(blocks_inv.inventory);
-                if !verified { warn!("One of the inventory record is not a block message. We might have a problem.") }
-                
+                if !verified {
+                    warn!("One of the inventory record is not a block message. We might have a problem.")
+                }
+
                 if blocks_inv.count > 1 {
                     // For now ignore notify inv message
                     break;
@@ -190,7 +199,6 @@ fn main() {
         // HERE - we need to handle forks
         let blocks = utils::check_chain(&mut blocks, hash.clone()).unwrap();
         // Looks into the database for the previous hash. If the previous hash exist we have a fork
-
 
         current_height += blocks.len() as u32;
         info!("Progress {}/{}", current_height, height);
