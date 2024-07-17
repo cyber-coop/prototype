@@ -1,0 +1,10 @@
+[database]
+host = "localhost"
+user = "postgres"
+password = "wow"
+dbname = "blockchains"
+
+# Mainnet
+[peer]
+ip = "127.0.0.1"
+port = 8333

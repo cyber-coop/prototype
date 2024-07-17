@@ -4,10 +4,46 @@ use postgres::Client;
 use std::io::prelude::*;
 use std::time::Instant;
 
+pub fn create_tables(schema_name: &String, postgres_client: &mut Client) {
+    let query = format!(
+        "
+        CREATE SCHEMA IF NOT EXISTS {schema_name};
+        CREATE TABLE IF NOT EXISTS {schema_name}.blocks (
+            height INTEGER NOT NULL,
+            hash BYTEA NOT NULL,
+            prevhash BYTEA NOT NULL,
+            merkleroot BYTEA NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS {schema_name}.transactions (
+            version INTEGER NOT NULL,
+            txid BYTEA,
+            block BYTEA NOT NULL,
+            locktime BIGINT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS {schema_name}.txins (
+            txid BYTEA NOT NULL,
+            index INTEGER NOT NULL,
+            outputhash BYTEA NOT NULL,
+            outputindex INTEGER NOT NULL,
+            sigscript BYTEA,
+            sequence INTEGER NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS {schema_name}.txouts (
+            txid BYTEA NOT NULL,
+            index INTEGER NOT NULL,
+            value BIGINT,
+            pkscript BYTEA
+        );
+        "
+    );
+
+    postgres_client.batch_execute(&query).unwrap();
+}
+
 pub fn save_blocks(
     blocks: Vec<Block>,
     schema_name: &String,
-    postgres_client:&mut Client,
+    postgres_client: &mut Client,
     current_height: &mut u32,
 ) {
     // register in database
@@ -96,47 +132,41 @@ pub fn save_blocks(
     });
     trace!("Finished formating blocks and transactions message");
 
-    let mut block_writer = postgres_client
-    .copy_in(format!("COPY {}.blocks FROM stdin (DELIMITER ',')", schema_name).as_str())
-    .unwrap();
-    block_writer
-        .write_all(blocks_string.as_bytes())
+    let mut transaction = postgres_client.transaction().unwrap();
+    let mut block_writer = transaction
+        .copy_in(format!("COPY {}.blocks FROM stdin (DELIMITER ',')", schema_name).as_str())
         .unwrap();
+    block_writer.write_all(blocks_string.as_bytes()).unwrap();
     block_writer.finish().unwrap();
 
-    let mut transaction_writer = postgres_client
-    .copy_in(
-        format!(
-            "COPY {}.transactions FROM stdin (DELIMITER ',')",
-            schema_name
+    let mut transaction_writer = transaction
+        .copy_in(
+            format!(
+                "COPY {}.transactions FROM stdin (DELIMITER ',')",
+                schema_name
+            )
+            .as_str(),
         )
-        .as_str(),
-    )
-    .unwrap();
+        .unwrap();
     transaction_writer
         .write_all(transactions_string.as_bytes())
         .unwrap();
     transaction_writer.finish().unwrap();
 
-    let mut txins_writer = postgres_client
-    .copy_in(format!("COPY {}.txins FROM stdin (DELIMITER ',')", schema_name).as_str())
-    .unwrap();
-    txins_writer
-        .write_all(txins_string.as_bytes())
+    let mut txins_writer = transaction
+        .copy_in(format!("COPY {}.txins FROM stdin (DELIMITER ',')", schema_name).as_str())
         .unwrap();
+    txins_writer.write_all(txins_string.as_bytes()).unwrap();
     txins_writer.finish().unwrap();
 
-    let mut txouts_writer = postgres_client
-    .copy_in(format!("COPY {}.txouts FROM stdin (DELIMITER ',')", schema_name).as_str())
-    .unwrap();
-    txouts_writer
-        .write_all(txouts_string.as_bytes())
+    let mut txouts_writer = transaction
+        .copy_in(format!("COPY {}.txouts FROM stdin (DELIMITER ',')", schema_name).as_str())
         .unwrap();
+    txouts_writer.write_all(txouts_string.as_bytes()).unwrap();
     txouts_writer.finish().unwrap();
 
-    // let mut transaction_writer = client.copy_in(format!("COPY {}.txs FROM stdin (DELIMITER ',')", schema_name).as_str()).unwrap();
-    // transaction_writer.write(transactions_string.as_bytes()).unwrap();
-    // transaction_writer.finish().unwrap();
+    // commit the transaction
+    transaction.commit().unwrap();
 
     info!(
         "Blocks registered in database (current_height {}) {:.2?}",

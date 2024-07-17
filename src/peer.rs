@@ -1,13 +1,12 @@
 use bitcoin_network::message::Message;
-use bitcoin_network::get_blocks::GetBlocks;
-use bitcoin_network::get_data::GetData;
 use bitcoin_network::version::Version;
-use std::net::TcpStream;
-use std::sync::mpsc::channel;
 use std::error::Error;
 use std::io::prelude::*;
-use std::thread::{self, sleep_ms};
+use std::net::TcpStream;
+use std::sync::mpsc::channel;
 use std::sync::mpsc::{Receiver, Sender};
+use std::thread;
+use std::time::Duration;
 
 use crate::utils;
 
@@ -36,7 +35,6 @@ impl Peer {
         peer.start_thread();
 
         return peer;
-
     }
 
     pub fn start_thread(&mut self) -> thread::JoinHandle<()> {
@@ -52,47 +50,44 @@ impl Peer {
                 let mut buf = [0; 24];
 
                 // we have this loop to be sure we have received at least 24 bytes
-                while stream.peek(&mut buf).unwrap() != 24 { thread::sleep_ms(50); }
+                while stream.peek(&mut buf).unwrap() != 24 {
+                    thread::sleep(Duration::from_millis(50));
+                }
                 stream.read_exact(&mut buf).unwrap();
                 data.extend(&buf);
-        
+
                 let payload_size = u32::from_le_bytes(buf[16..20].try_into().unwrap()) as usize;
-                let command = String::from_utf8(buf[4..16].to_vec()).unwrap();
+                let _command = String::from_utf8(buf[4..16].to_vec()).unwrap();
 
                 // Message payload
-                let mut payload : Vec<u8> = vec![];
+                let mut payload: Vec<u8> = vec![];
 
                 // we have this loop to be sure we have received the complete payload
-                while payload.len() < payload_size {  
+                while payload.len() < payload_size {
                     let mut buf: Vec<u8> = vec![0; payload_size - payload.len()];
                     let l = stream.read(&mut buf).unwrap();
 
                     payload.extend(&buf[0..l]);
-                    thread::sleep_ms(500);
+                    thread::sleep(Duration::from_millis(500));
                 }
                 data.extend(payload);
-        
+
                 let message = Message::deserialize(&data).unwrap();
 
                 // answer ping message and don't add it to the queue
                 if message.command.starts_with("ping") {
                     trace!("'ping' received");
-                    let pong = Message::new(
-                        magic_bytes,
-                        "pong".to_owned(),
-                        message.payload.clone(),
-                    );
-                    stream
-                    .write(&pong.serialize())
-                    .unwrap();
+                    let pong =
+                        Message::new(magic_bytes, "pong".to_owned(), message.payload.clone());
+                    stream.write(&pong.serialize()).unwrap();
                     stream.flush().unwrap();
 
                     trace!("'pong' sent");
-                    
+
                     continue;
                 }
 
-                tx.send(message);
+                let _ = tx.send(message);
             }
         })
     }
@@ -109,8 +104,7 @@ impl Peer {
         info!("'{}' received", message_rcv.command);
 
         // We need to know the node current block height
-        let version = Version::deserialize(&message_rcv.payload)
-            .unwrap();
+        let version = Version::deserialize(&message_rcv.payload).unwrap();
         info!("Current block height: {:?}", version.start_height);
 
         // verack

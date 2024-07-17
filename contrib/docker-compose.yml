@@ -1,0 +1,116 @@
+version: "3.9"
+
+services:
+  # Bitcoin Mainnet
+  indexer_bitcoin_mainnet:
+    build: ../.
+    depends_on:
+      - postgres
+    environment:
+      NETWORK: "bitcoin_mainnet"
+      RUST_LOG: "prototype=info"
+    volumes:
+      - ../config.bitcoin_mainnet.toml:/config.toml
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Bitcoin testnet
+  indexer_bitcoin_testnet:
+    build: ../.
+    depends_on:
+      - postgres
+    environment:
+      NETWORK: "bitcoin_testnet"
+      RUST_LOG: "prototype=info"
+    volumes:
+      - ../config.bitcoin_testnet.toml:/config.toml
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Dogecoin Mainnet
+  indexer_dogecoin_mainnet:
+    build: ../.
+    depends_on:
+      - postgres
+    environment:
+      NETWORK: "dogecoin_mainnet"
+      RUST_LOG: "prototype=info"
+    volumes:
+      - ../config.dogecoin_mainnet.toml:/config.toml
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Dogecoin testnet
+  indexer_dogecoin_testnet:
+    build: ../.
+    depends_on:
+      - postgres
+    environment:
+      NETWORK: "dogecoin_testnet"
+      RUST_LOG: "prototype=info"
+    volumes:
+      - ../config.dogecoin_testnet.toml:/config.toml
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Litecoin Mainnet
+  indexer_litecoin_mainnet:
+    build: ../.
+    depends_on:
+      - postgres
+    environment:
+      NETWORK: "litecoin_mainnet"
+      RUST_LOG: "prototype=info"
+    volumes:
+      - ../config.litecoin_mainnet.toml:/config.toml
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Litecoin Testnet
+  indexer_litecoin_testnet:
+    build: ../.
+    depends_on:
+      - postgres
+    environment:
+      NETWORK: "litecoin_testnet"
+      RUST_LOG: "prototype=info"
+    volumes:
+      - ../config.litecoin_testnet.toml:/config.toml
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Namecoin Mainnet
+  indexer_namecoin_mainnet:
+    build: ../.
+    depends_on:
+      - postgres
+    environment:
+      NETWORK: "namecoin_mainnet"
+      RUST_LOG: "prototype=info"
+    volumes:
+      - ../config.namecoin_mainnet.toml:/config.toml
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: "postgres:latest"
+    container_name: "postgres"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: wow
+      POSTGRES_DB: blockchains
+    # ¡IMPORTANT! If you don't want to lose your data you should uncomment this
+    volumes:
+      - ./data/:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
