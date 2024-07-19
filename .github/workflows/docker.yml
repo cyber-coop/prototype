@@ -23,4 +23,4 @@ jobs:
         run: docker build . --file Dockerfile --tag rllola/prototype:${{ github.ref_name }}
 
       - name: Push Docker image
-        run: docker push rllola/eth-prototype:${{ github.ref_name }}
+        run: docker push rllola/prototype:${{ github.ref_name }}
