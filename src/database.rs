@@ -70,31 +70,6 @@ pub fn save_blocks(
         b.transactions.iter().for_each(|t| {
             let txid = t.hash().to_vec();
 
-            // Remove dogecoin testnet duplicate txid
-            // TODO: improve this; we could maybe delete in sql before applying constraints
-            if schema_name == "dogecoin_testnet" {
-                if DOGECOIN_TESTNET_DUPLICATE
-                    .iter()
-                    .find(|x| x.0 == hex::encode(&txid) && x.1 == hex::encode(&hash))
-                    .is_some()
-                {
-                    info!("duplicate txid");
-                    return;
-                }
-            }
-
-            // Remove namecoin mainnet duplicate txid
-            if schema_name == "namecoin_mainnet" {
-                if NAMECOIN_MAINNET_DUPLICATE
-                    .iter()
-                    .find(|x| x.0 == hex::encode(&txid) && x.1 == hex::encode(&hash))
-                    .is_some()
-                {
-                    info!("duplicate txid");
-                    return;
-                }
-            }
-
             let tmp = format!(
                 "{},\\\\x{},\\\\x{},{}\n",
                 t.version,
@@ -173,8 +148,4 @@ pub fn save_blocks(
         current_height,
         now.elapsed()
     );
-}
-
-pub fn finish() {
-    info!("done!")
 }
