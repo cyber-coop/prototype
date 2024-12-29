@@ -116,7 +116,7 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 [[package]]
 name = "bitcoin-network"
 version = "0.1.1"
-source = "git+https://github.com/cyber-coop/bitcoin-network?branch=deps%2Fupdate#18781bb1e86a23d8d440654338a27e06c6db125d"
+source = "git+https://github.com/cyber-coop/bitcoin-network?branch=main#c9ce890b7fd9e9a9404b4f5d377451e0a8d770a5"
 dependencies = [
  "bitcoin-varint",
  "sha2",
