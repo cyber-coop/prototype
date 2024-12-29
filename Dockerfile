@@ -6,7 +6,7 @@ COPY . .
 RUN cargo install --path .
 
 ##### RUNNER #####
-FROM debian:buster-slim
+FROM debian:bookworm
 
 LABEL author="Lola Rigaut-Luczak <me@laflemme.lol>"
 LABEL description="Custom node that allow indexing blocks and transactions from block chains."

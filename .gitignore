@@ -8,3 +8,6 @@ script/
 privatekeys.txt
 Makefile.prod
 docker-compose.prod.yml
+config.toml
+config.*.toml
+!config.example.toml
