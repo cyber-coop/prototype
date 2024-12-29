@@ -11,7 +11,7 @@ pub mod networks;
 pub mod peer;
 pub mod utils;
 
-use crate::database::{finish, save_blocks};
+use crate::database::save_blocks;
 use crate::peer::Peer;
 
 #[macro_use]
@@ -40,7 +40,7 @@ fn main() {
 
     let mut message_rcv: Message;
     let mut peer = Peer::new(
-        format!("{},{}", config.peer.ip, config.peer.port),
+        format!("{}:{}", config.peer.ip, config.peer.port),
         network.magic_bytes,
     );
     let mut current_height: u32 = 0;
@@ -121,8 +121,6 @@ fn main() {
                 break;
             }
         }
-
-        finish();
     });
 
     /****************************

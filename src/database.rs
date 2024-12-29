@@ -1,4 +1,3 @@
-use super::duplicate::{DOGECOIN_TESTNET_DUPLICATE, NAMECOIN_MAINNET_DUPLICATE};
 use bitcoin_network::block::Block;
 use postgres::Client;
 use std::io::prelude::*;
@@ -24,9 +23,9 @@ pub fn create_tables(schema_name: &String, postgres_client: &mut Client) {
             txid BYTEA NOT NULL,
             index INTEGER NOT NULL,
             outputhash BYTEA NOT NULL,
-            outputindex INTEGER NOT NULL,
+            outputindex BIGINT NOT NULL,
             sigscript BYTEA,
-            sequence INTEGER NOT NULL
+            sequence BIGINT NOT NULL
         );
         CREATE TABLE IF NOT EXISTS {schema_name}.txouts (
             txid BYTEA NOT NULL,
@@ -78,7 +77,6 @@ pub fn save_blocks(
                 t.lock_time
             );
 
-            // let tmp = format!("\\\\x{},\\\\x{}\n", hex::encode(&txid), hex::encode(&hash));
             transactions_string.push_str(&tmp);
 
             t.tx_ins.iter().enumerate().for_each(|(i, txin)| {
