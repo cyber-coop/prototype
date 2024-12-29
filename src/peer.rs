@@ -51,7 +51,7 @@ impl Peer {
 
                 // we have this loop to be sure we have received at least 24 bytes
                 while stream.peek(&mut buf).unwrap() != 24 {
-                    thread::sleep(Duration::from_millis(50));
+                    thread::sleep(Duration::from_millis(5));
                 }
                 stream.read_exact(&mut buf).unwrap();
                 data.extend(&buf);
@@ -68,7 +68,7 @@ impl Peer {
                     let l = stream.read(&mut buf).unwrap();
 
                     payload.extend(&buf[0..l]);
-                    thread::sleep(Duration::from_millis(500));
+                    thread::sleep(Duration::from_millis(5));
                 }
                 data.extend(payload);
 

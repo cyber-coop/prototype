@@ -4,3 +4,4 @@ target
 Dockerfile
 Makefile
 *.md
+config.toml
