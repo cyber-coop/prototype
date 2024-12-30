@@ -71,7 +71,7 @@ fn main() {
     let result = postgres_client.query(format!("SELECT * FROM {0}.blocks a JOIN (SELECT MAX(height) as h FROM {0}.blocks) b ON a.height = b.h;", network_arg).as_str(), &[]).unwrap();
     if result.len() > 0 {
         let row = &result[0];
-        current_height = row.get(0);
+        current_height = row.get::<usize, i32>(0).try_into().expect("to be able to convert i32 to u32 for block height");
         hash = row.get(1);
 
         info!(
