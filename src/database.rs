@@ -51,6 +51,8 @@ pub fn save_blocks(
     let mut transactions_string: String = String::new();
     let mut txins_string: String = String::new();
     let mut txouts_string: String = String::new();
+    // we have a 1Gigabyte limit and the transactions bulk will go over that limit so we split it
+    let mut txouts_strings: Vec<String> = vec![];
 
     trace!("starting to format blocks and transactions");
     blocks.iter().for_each(|b| {
@@ -99,6 +101,13 @@ pub fn save_blocks(
                     txout.value,
                     hex::encode(&txout.pk_script)
                 );
+
+                // verifying if we are not going over the 1Gigabyte limit if yes we start a new copy in query
+                if txouts_string.as_bytes().len() + tmp.as_bytes().len() > 1000000000 {
+                    txouts_strings.push(txouts_string.clone());
+                    txouts_string = String::new();
+                }
+
                 txouts_string.push_str(&tmp);
             });
         });
@@ -132,11 +141,24 @@ pub fn save_blocks(
     txins_writer.write_all(txins_string.as_bytes()).unwrap();
     txins_writer.finish().unwrap();
 
-    let mut txouts_writer = transaction
-        .copy_in(format!("COPY {}.txouts FROM stdin (DELIMITER ',')", schema_name).as_str())
-        .unwrap();
-    txouts_writer.write_all(txouts_string.as_bytes()).unwrap();
-    txouts_writer.finish().unwrap();
+    let mut chunk_index = 1;
+    let number_of_chunks = txouts_strings.len();
+    for txouts in txouts_strings {
+        info!(
+            "Sending txouts chunk {}/{} (size {} bytes)",
+            chunk_index,
+            number_of_chunks,
+            txouts.as_bytes().len()
+        );
+
+        let mut txouts_writer = transaction
+            .copy_in(format!("COPY {}.txouts FROM stdin (DELIMITER ',')", schema_name).as_str())
+            .unwrap();
+        txouts_writer.write_all(txouts.as_bytes()).unwrap();
+        txouts_writer.finish().unwrap();
+
+        chunk_index = chunk_index + 1;
+    }
 
     // commit the transaction
     transaction.commit().unwrap();
