@@ -141,8 +141,6 @@ pub fn save_blocks(
     txins_writer.write_all(txins_string.as_bytes()).unwrap();
     txins_writer.finish().unwrap();
 
-
-
     let mut chunk_index = 1;
     let number_of_chunks = txouts_strings.len();
     for txouts in txouts_strings {
