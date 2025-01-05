@@ -141,7 +141,11 @@ fn main() {
         let message_get_blocks =
             Message::new(network.magic_bytes, "getblocks".to_owned(), get_blocks);
 
-        trace!("Send 'getblocks' message for blocks startint at {} (hash {})", current_height, hex::encode(&hash));
+        trace!(
+            "Send 'getblocks' message for blocks startint at {} (hash {})",
+            current_height,
+            hex::encode(&hash)
+        );
         peer.send(&message_get_blocks);
 
         loop {
@@ -176,7 +180,10 @@ fn main() {
             message_rcv.payload,
         );
 
-        trace!("Send 'getdata' message for blocks startint at {}", current_height);
+        trace!(
+            "Send 'getdata' message for blocks startint at {}",
+            current_height
+        );
 
         let now = Instant::now();
         peer.send(&get_data_message);
