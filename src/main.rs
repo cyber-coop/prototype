@@ -141,10 +141,13 @@ fn main() {
         let message_get_blocks =
             Message::new(network.magic_bytes, "getblocks".to_owned(), get_blocks);
 
+        trace!("Send 'getblocks' message for blocks startint at {} (hash {})", current_height, hex::encode(&hash));
         peer.send(&message_get_blocks);
 
         loop {
             message_rcv = peer.read().unwrap();
+
+            trace!("Message received ({})", message_rcv.command);
 
             if message_rcv.command.starts_with("inv") {
                 blocks_inv = GetData::deserialize(&message_rcv.payload).unwrap();
@@ -154,6 +157,8 @@ fn main() {
                 if !verified {
                     warn!("One of the inventory record is not a block message. We might have a problem.")
                 }
+
+                trace!("inv block count {}", blocks_inv.count);
 
                 if blocks_inv.count > 1 {
                     // For now ignore notify inv message
@@ -171,6 +176,8 @@ fn main() {
             message_rcv.payload,
         );
 
+        trace!("Send 'getdata' message for blocks startint at {}", current_height);
+
         let now = Instant::now();
         peer.send(&get_data_message);
 
@@ -178,12 +185,16 @@ fn main() {
         let mut blocks: Vec<Block> = vec![];
 
         loop {
+            trace!("Count {}", count);
+
             // Sometimes we have 501 blocks because they are adding the newly discovered block at the end
             if count == blocks_inv.count {
                 break;
             }
 
             message_rcv = peer.read().unwrap();
+            trace!("Message received ({})", message_rcv.command);
+
             if message_rcv.command.starts_with("block") {
                 count += 1;
 
