@@ -1,5 +1,5 @@
 ##### BUILDER #####
-FROM rustlang/rust:nightly as builder
+FROM rustlang/rust:nightly AS builder
 
 WORKDIR /usr/src/prototype
 COPY . .

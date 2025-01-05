@@ -54,7 +54,6 @@ pub fn save_blocks(
     // we have a 1Gigabyte limit and the transactions bulk will go over that limit so we split it
     let mut txouts_strings: Vec<String> = vec![];
 
-    trace!("starting to format blocks and transactions");
     blocks.iter().for_each(|b| {
         *current_height = *current_height + 1;
 
@@ -112,7 +111,6 @@ pub fn save_blocks(
             });
         });
     });
-    trace!("Finished formating blocks and transactions message");
 
     let mut transaction = postgres_client.transaction().unwrap();
     let mut block_writer = transaction
