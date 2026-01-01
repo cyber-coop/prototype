@@ -5,7 +5,7 @@ pub mod get_blocks;
 pub mod get_data;
 pub mod inventory;
 pub mod message;
+pub mod ping;
 pub mod tx;
 mod utils;
 pub mod version;
-pub mod ping;

@@ -10,7 +10,7 @@ impl Ping {
     pub fn serialize(&self) -> Vec<u8> {
         let mut result: Vec<u8> = vec![];
         result.extend_from_slice(&self.nonce.to_le_bytes());
-        
+
         result
     }
 
@@ -21,9 +21,7 @@ impl Ping {
         cur.read_exact(&mut buf)?;
         let nonce = u64::from_le_bytes(buf);
 
-        Ok(Self {
-            nonce,
-        })
+        Ok(Self { nonce })
     }
 }
 

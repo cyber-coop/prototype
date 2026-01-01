@@ -1,10 +1,10 @@
 #![feature(cursor_split)]
 
-pub mod p2p;
 pub mod configs;
 pub mod database;
 pub mod duplicate;
 pub mod networks;
+pub mod p2p;
 pub mod peer;
 pub mod utils;
 
