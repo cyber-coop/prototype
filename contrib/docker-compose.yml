@@ -1,9 +1,12 @@
-version: "3.9"
+# Docker-compose.yml file to index all the blockchains
+# The config.*.yml files mathing the network has to be created first
 
 services:
   # Bitcoin Mainnet
   indexer_bitcoin_mainnet:
-    build: ../.
+    image: rllola/prototype
+    build: https://github.com/cyber-coop/prototype.git
+    container_name: indexer-bitcoin-mainnet
     depends_on:
       - postgres
     environment:
@@ -17,7 +20,9 @@ services:
 
   # Bitcoin testnet
   indexer_bitcoin_testnet:
-    build: ../.
+    image: rllola/prototype
+    build: https://github.com/cyber-coop/prototype.git
+    container_name: indexer-bitcoin-testnet
     depends_on:
       - postgres
     environment:
@@ -31,7 +36,9 @@ services:
 
   # Dogecoin Mainnet
   indexer_dogecoin_mainnet:
-    build: ../.
+    image: rllola/prototype
+    build: https://github.com/cyber-coop/prototype.git
+    container_name: indexer-dogecoin-mainnet
     depends_on:
       - postgres
     environment:
@@ -45,7 +52,9 @@ services:
 
   # Dogecoin testnet
   indexer_dogecoin_testnet:
-    build: ../.
+    image: rllola/prototype
+    build: https://github.com/cyber-coop/prototype.git
+    container_name: indexer-dogecoin-testnet
     depends_on:
       - postgres
     environment:
@@ -59,7 +68,9 @@ services:
 
   # Litecoin Mainnet
   indexer_litecoin_mainnet:
-    build: ../.
+    image: rllola/prototype
+    build: https://github.com/cyber-coop/prototype.git
+    container_name: indexer-litecoin-mainnet
     depends_on:
       - postgres
     environment:
@@ -73,7 +84,9 @@ services:
 
   # Litecoin Testnet
   indexer_litecoin_testnet:
-    build: ../.
+    image: rllola/prototype
+    build: https://github.com/cyber-coop/prototype.git
+    container_name: indexer-litecoin-testnet
     depends_on:
       - postgres
     environment:
@@ -87,7 +100,9 @@ services:
 
   # Namecoin Mainnet
   indexer_namecoin_mainnet:
-    build: ../.
+    image: rllola/prototype
+    build: https://github.com/cyber-coop/prototype.git
+    container_name: indexer-namecoin-mainnet
     depends_on:
       - postgres
     environment:
