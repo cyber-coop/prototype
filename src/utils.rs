@@ -1,5 +1,5 @@
-use bitcoin_network::{address::Address, version::Version};
-use bitcoin_network::{block::Block, inventory::Inventory};
+use crate::p2p::{address::Address, version::Version};
+use crate::p2p::{block::Block, inventory::Inventory};
 use std::error::Error;
 use std::time::{SystemTime, UNIX_EPOCH};
 

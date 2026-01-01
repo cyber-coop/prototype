@@ -1,15 +1,18 @@
-use bitcoin_network::{block::Block, get_blocks::GetBlocks, get_data::GetData, message::Message};
-use std::env;
-use std::sync::mpsc::sync_channel;
-use std::thread;
-use std::time::Instant;
+#![feature(cursor_split)]
 
 pub mod configs;
 pub mod database;
 pub mod duplicate;
 pub mod networks;
+pub mod p2p;
 pub mod peer;
 pub mod utils;
+
+use p2p::{block::Block, get_blocks::GetBlocks, get_data::GetData, message::Message};
+use std::env;
+use std::sync::mpsc::sync_channel;
+use std::thread;
+use std::time::Instant;
 
 use crate::database::save_blocks;
 use crate::peer::Peer;

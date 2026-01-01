@@ -1,6 +1,5 @@
 [package]
 name = "prototype"
-version = "0.1.0"
 edition = "2021"
 authors = ["Lola Rigaut-Luczak <me@laflemme.lol>"]
 
@@ -8,10 +7,11 @@ authors = ["Lola Rigaut-Luczak <me@laflemme.lol>"]
 
 [dependencies]
 hex = "0.4.3"
-bitcoin-network = { git = "https://github.com/cyber-coop/bitcoin-network", branch = "main" }
 magic-bytes = "0.1.0"
 postgres = { version = "0.19" }
 log = "0.4"
 env_logger = "0.11"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
+sha2 = "0.10.9"
+varint = {package = "bitcoin-varint", version = "0.1.0"}
