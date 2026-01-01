@@ -4,8 +4,5 @@ postgres:
 build-docker:
 	docker build -t prototype .
 
-run-docker:
-	docker run -it --rm -e NETWORK=dogecoin -e TESTNET=true --name prototype-dogecoin-testnet prototype
-
 run:
-	RUST_LOG="prototype=trace" cargo r -- $(network)
+	RUST_LOG="prototype=info" cargo r -- $(network)

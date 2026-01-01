@@ -1,5 +1,5 @@
-use bitcoin_network::message::Message;
-use bitcoin_network::version::Version;
+use crate::p2p::message::Message;
+use crate::p2p::version::Version;
 use std::error::Error;
 use std::io::prelude::*;
 use std::net::TcpStream;

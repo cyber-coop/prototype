@@ -1,4 +1,4 @@
-use bitcoin_network::block::Block;
+use crate::p2p::block::Block;
 use postgres::Client;
 use std::io::prelude::*;
 use std::time::Instant;
