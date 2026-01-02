@@ -1,8 +1,8 @@
 use crate::p2p::block::Block;
+use log::info;
 use postgres::Client;
 use std::io::prelude::*;
 use std::time::Instant;
-use log::info;
 
 pub fn create_tables(schema_name: &String, postgres_client: &mut Client) {
     let query = format!(

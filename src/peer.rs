@@ -1,4 +1,4 @@
-
+use log::{info, trace};
 use std::error::Error;
 use std::io::prelude::*;
 use std::net::TcpStream;
@@ -6,11 +6,10 @@ use std::sync::mpsc::channel;
 use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use std::time::Duration;
-use log::{info, trace};
 
-use crate::utils;
 use crate::p2p::message::Message;
 use crate::p2p::version::Version;
+use crate::utils;
 
 pub struct Peer {
     stream: TcpStream,
