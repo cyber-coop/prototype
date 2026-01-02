@@ -84,7 +84,7 @@ impl Block {
         let nonce = u32::from_le_bytes(buf);
 
         if auxpow_activated && (version & BLOCK_VERSION_AUXPOW_BIT) != 0 {
-            let (aux_power, size) = match AuxPoWHeader::deserialize_with_size(cur.split().1) {
+            let (_aux_power, size) = match AuxPoWHeader::deserialize_with_size(cur.split().1) {
                 Ok((aux_power, size)) => (aux_power, size),
                 Err(error) => {
                     return Err(error);
@@ -135,9 +135,9 @@ impl AuxPoWHeader {
         let varint_size = VarInt::get_size(count)? as u64;
         cur.set_position(cur.position() + varint_size);
 
-        let mut tx_ins: Vec<TxIn> = vec![];
+        let mut _tx_ins: Vec<TxIn> = vec![];
         for _ in 0..count {
-            let (tx_in, size) = TxIn::deserialize_with_size(cur.split().1)?;
+            let (_tx_in, size) = TxIn::deserialize_with_size(cur.split().1)?;
             cur.set_position(cur.position() + size);
         }
 
@@ -145,19 +145,19 @@ impl AuxPoWHeader {
         let varint_size = VarInt::get_size(count)? as u64;
         cur.set_position(cur.position() + varint_size);
 
-        let mut tx_outs: Vec<TxOut> = vec![];
+        let mut _tx_outs: Vec<TxOut> = vec![];
         for _ in 0..count {
-            let (tx_out, size) = TxOut::deserialize_with_size(cur.split().1)?;
+            let (_tx_out, size) = TxOut::deserialize_with_size(cur.split().1)?;
             cur.set_position(cur.position() + size);
         }
 
         let mut buf = [0u8; 4];
         cur.read_exact(&mut buf)?;
-        let lock_time = u32::from_le_bytes(buf);
+        let _lock_time = u32::from_le_bytes(buf);
 
         let mut buf = [0u8; 32];
         cur.read_exact(&mut buf)?;
-        let parent_hash = buf;
+        let _parent_hash = buf;
 
         let count = VarInt::decode(cur.split().1)?;
         let varint_size = VarInt::get_size(count)? as u64;
@@ -166,12 +166,12 @@ impl AuxPoWHeader {
         for _ in 0..count {
             let mut buf = [0u8; 32];
             cur.read_exact(&mut buf)?;
-            let merkle_hash = buf;
+            let _merkle_hash = buf;
         }
 
         let mut buf = [0u8; 4];
         cur.read_exact(&mut buf)?;
-        let bitmask = u32::from_le_bytes(buf);
+        let _bitmask = u32::from_le_bytes(buf);
 
         let count = VarInt::decode(cur.split().1)?;
         let varint_size = VarInt::get_size(count)? as u64;
@@ -180,12 +180,12 @@ impl AuxPoWHeader {
         for _ in 0..count {
             let mut buf = [0u8; 32];
             cur.read_exact(&mut buf)?;
-            let merkle_hash = buf;
+            let _merkle_hash = buf;
         }
 
         let mut buf = [0u8; 4];
         cur.read_exact(&mut buf)?;
-        let bitmask = u32::from_le_bytes(buf);
+        let _bitmask = u32::from_le_bytes(buf);
 
         let mut buf = [0u8; 80];
         cur.read_exact(&mut buf)?;
@@ -203,6 +203,6 @@ mod tests {
     fn test_block_deserialize() {
         let f = fs::read("./raw_50057.bin").unwrap();
 
-        let block = Block::deserialize(&f, false).expect("should deserialize raw block");
+        let _block = Block::deserialize(&f, false).expect("should deserialize raw block");
     }
 }

@@ -8,6 +8,7 @@ pub mod p2p;
 pub mod peer;
 pub mod utils;
 
+use log::{info, trace, warn};
 use p2p::{block::Block, get_blocks::GetBlocks, get_data::GetData, message::Message};
 use std::env;
 use std::sync::mpsc::sync_channel;
@@ -16,9 +17,6 @@ use std::time::Instant;
 
 use crate::database::save_blocks;
 use crate::peer::Peer;
-
-#[macro_use]
-extern crate log;
 
 fn main() {
     // Init log
@@ -102,7 +100,7 @@ fn main() {
     // Create a simple streaming channel (limited buffer of 4 batch of 500 blocks to avoid filling ram)
     let (tx, rx) = sync_channel(4);
 
-    let _thread_handle = thread::spawn(move || {
+    let _database_thread = thread::spawn(move || {
         info!("Starting database thread");
         let mut process_current_height = current_height;
 

@@ -1,4 +1,5 @@
 use crate::p2p::block::Block;
+use log::info;
 use postgres::Client;
 use std::io::prelude::*;
 use std::time::Instant;
