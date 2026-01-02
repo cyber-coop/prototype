@@ -13,12 +13,11 @@ use std::env;
 use std::sync::mpsc::sync_channel;
 use std::thread;
 use std::time::Instant;
+use log::{info, trace, warn};
 
 use crate::database::save_blocks;
 use crate::peer::Peer;
 
-#[macro_use]
-extern crate log;
 
 fn main() {
     // Init log
@@ -102,7 +101,7 @@ fn main() {
     // Create a simple streaming channel (limited buffer of 4 batch of 500 blocks to avoid filling ram)
     let (tx, rx) = sync_channel(4);
 
-    let _thread_handle = thread::spawn(move || {
+    let _database_thread = thread::spawn(move || {
         info!("Starting database thread");
         let mut process_current_height = current_height;
 
