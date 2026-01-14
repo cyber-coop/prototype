@@ -112,6 +112,7 @@ pub fn save_blocks(
             });
         });
     });
+    txouts_strings.push(txouts_string.clone());
 
     let mut transaction = postgres_client.transaction().unwrap();
     let mut block_writer = transaction
