@@ -114,7 +114,6 @@ pub fn save_blocks(
     });
     txouts_strings.push(txouts_string.clone());
 
-
     let mut transaction = postgres_client.transaction().unwrap();
     let mut block_writer = transaction
         .copy_in(format!("COPY {}.blocks FROM stdin (DELIMITER ',')", schema_name).as_str())
