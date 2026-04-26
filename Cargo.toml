@@ -1,6 +1,6 @@
 [package]
 name = "prototype"
-edition = "2021"
+edition = "2024"
 authors = ["Lola Rigaut-Luczak <me@laflemme.lol>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -15,3 +15,10 @@ serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
 sha2 = "0.10.9"
 varint = {package = "bitcoin-varint", version = "0.1.0"}
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"
