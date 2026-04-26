@@ -78,7 +78,7 @@ impl Version {
             _ => {
                 return Err(DeserializeError(
                     "Failed to deserialize relay value".to_owned(),
-                ))
+                ));
             }
         };
 

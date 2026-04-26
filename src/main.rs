@@ -160,7 +160,9 @@ fn main() {
                 // Verify if inventory is what we asked for
                 let verified = utils::verify_inv_identifier(blocks_inv.inventory);
                 if !verified {
-                    warn!("One of the inventory record is not a block message. We might have a problem.")
+                    warn!(
+                        "One of the inventory record is not a block message. We might have a problem."
+                    );
                 }
 
                 trace!("inv block count {}", blocks_inv.count);
