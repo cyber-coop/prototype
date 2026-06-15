@@ -41,22 +41,26 @@ fn main() {
      ********************/
 
     let mut message_rcv: Message;
-    let peer_addr = match config.peer {
-        Some(ref p) => format!("{}:{}", p.ip, p.port),
+    let mut peer = match config.peer {
+        Some(ref p) => {
+            let addr = format!("{}:{}", p.ip, p.port);
+            info!("Connecting to peer {}", addr);
+            Peer::new(addr, network.magic_bytes).expect("failed to connect to configured peer")
+        }
         None => network
             .dns_seeds
             .iter()
-            .find_map(|seed| {
+            .flat_map(|seed| {
                 (*seed, network.port)
                     .to_socket_addrs()
-                    .ok()?
-                    .next()
-                    .map(|addr| addr.to_string())
+                    .unwrap_or_else(|_| vec![].into_iter())
             })
-            .expect("no DNS seed resolved to a valid address"),
+            .find_map(|addr| {
+                info!("Trying peer {}", addr);
+                Peer::new(addr.to_string(), network.magic_bytes).ok()
+            })
+            .expect("could not connect to any peer from DNS seeds"),
     };
-    info!("Connecting to peer {}", peer_addr);
-    let mut peer = Peer::new(peer_addr, network.magic_bytes);
     let mut current_height: u32 = 0;
 
     let mut hash = network.genesis_hash.to_vec();

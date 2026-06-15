@@ -20,8 +20,9 @@ pub struct Peer {
 }
 
 impl Peer {
-    pub fn new(ip: String, magic_bytes: [u8; 4]) -> Self {
-        let stream = TcpStream::connect(&ip).expect("Create TcpStream");
+    pub fn new(ip: String, magic_bytes: [u8; 4]) -> Result<Self, Box<dyn Error>> {
+        let addr: std::net::SocketAddr = ip.parse()?;
+        let stream = TcpStream::connect_timeout(&addr, Duration::from_secs(5))?;
 
         let (tx, rx) = channel::<Message>();
 
@@ -35,7 +36,7 @@ impl Peer {
 
         peer.start_thread();
 
-        return peer;
+        Ok(peer)
     }
 
     pub fn start_thread(&mut self) -> thread::JoinHandle<()> {
