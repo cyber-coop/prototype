@@ -63,13 +63,12 @@ impl Network {
         testnet: true,
         magic_bytes: MagicBytes::LITECOIN_TESTNET,
         aux_pow: false,
-        port: 19333,
+        port: 19335,
         genesis_hash: [
             73, 102, 98, 90, 75, 40, 81, 217, 253, 238, 19, 158, 86, 33, 26, 13, 136, 87, 95, 89,
             237, 129, 111, 245, 230, 166, 61, 235, 78, 62, 41, 160,
         ],
         dns_seeds: &[
-            "seed-b.litecoin.loshan.co.uk",
             "dnsseed-testnet.thrasher.io",
             "testnet-seed.ltc.xurious.com",
         ],
