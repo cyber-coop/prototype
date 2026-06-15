@@ -20,7 +20,7 @@ pub struct Peer {
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub database: DatabaseConfig,
-    pub peer: Peer,
+    pub peer: Option<Peer>,
 }
 
 pub fn read_config() -> Config {
