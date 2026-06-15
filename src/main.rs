@@ -43,19 +43,17 @@ fn main() {
     let mut message_rcv: Message;
     let peer_addr = match config.peer {
         Some(ref p) => format!("{}:{}", p.ip, p.port),
-        None => {
-            network
-                .dns_seeds
-                .iter()
-                .find_map(|seed| {
-                    (*seed, network.port)
-                        .to_socket_addrs()
-                        .ok()?
-                        .next()
-                        .map(|addr| addr.to_string())
-                })
-                .expect("no DNS seed resolved to a valid address")
-        }
+        None => network
+            .dns_seeds
+            .iter()
+            .find_map(|seed| {
+                (*seed, network.port)
+                    .to_socket_addrs()
+                    .ok()?
+                    .next()
+                    .map(|addr| addr.to_string())
+            })
+            .expect("no DNS seed resolved to a valid address"),
     };
     info!("Connecting to peer {}", peer_addr);
     let mut peer = Peer::new(peer_addr, network.magic_bytes);

@@ -56,10 +56,7 @@ impl Network {
             18, 167, 101, 227, 31, 253, 64, 89, 186, 218, 30, 37, 25, 15, 110, 152, 201, 157, 151,
             20, 211, 52, 239, 164, 26, 25, 90, 126, 126, 4, 191, 226,
         ],
-        dns_seeds: &[
-            "seed-a.litecoin.loshan.co.uk",
-            "dnsseed.thrasher.io",
-        ],
+        dns_seeds: &["seed-a.litecoin.loshan.co.uk", "dnsseed.thrasher.io"],
     };
 
     pub const LITECOIN_TESTNET: Network = Network {
@@ -140,7 +137,10 @@ mod tests {
                 .unwrap_or_else(|e| panic!("{seed}: DNS lookup failed: {e}"))
                 .collect();
             assert!(!addrs.is_empty(), "{seed}: resolved to no addresses");
-            println!("{seed}: {:?}", addrs.iter().map(|a| a.ip()).collect::<Vec<_>>());
+            println!(
+                "{seed}: {:?}",
+                addrs.iter().map(|a| a.ip()).collect::<Vec<_>>()
+            );
         }
     }
 
