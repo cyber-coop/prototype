@@ -69,7 +69,6 @@ impl Network {
             237, 129, 111, 245, 230, 166, 61, 235, 78, 62, 41, 160,
         ],
         dns_seeds: &[
-            "seed-b.litecoin.loshan.co.uk",
             "dnsseed-testnet.thrasher.io",
             "testnet-seed.ltc.xurious.com",
         ],
